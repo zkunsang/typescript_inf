@@ -1,45 +1,100 @@
-## 함수를 저장하는 경우
+## this
 
-함수 리턴 X
+일반 함수의 this는 이 함수를 호출한 주체를 의미
 
 ```ts
-export {};
+function Counter2() {
+  this.value = 0;
+  this.add = function (amount) {
+    this.value += amount;
+    console.log(this === global);
+  };
+}
 
-const getText: (name: string, age: number) => string = function (name, age) {
-  return 'hello';
+const counter2 = new Counter2();
+console.log(counter2.value);
+counter2.add(5);
+console.log(counter2.value);
+
+const add2 = counter2.add;
+add2(5);
+console.log(counter2.value);
+```
+
+의 결과는?
+
+> 0  
+> false  
+> 5  
+> true  
+> 5
+
+---
+
+화살표 함수의 this는 이 화살표 함수가 생성 될 당시의 this를 가리킴(**정적**)  
+일반함수는 (**동적**)
+add 함수를 누가 호출하냐는 전혀 상관이 없게 됨
+
+---
+
+```ts
+class Counter3 {
+  value = 0;
+  add = (amount) => {
+    this.value += amount;
+  };
+
+  add2(amount) {
+    this.value += amount;
+  }
+}
+```
+
+add와 add2는 다르다.
+
+---
+
+```ts
+const counter4 = {
+  value: 0,
+  add: function (amount) {
+    this.value += amount;
+  },
 };
 
-const temp: string = getText('123', 4);
+console.log(counter4.value);
+counter4.add(5);
+console.log(counter4.value);
+const add4 = counter4.add;
+add4(5);
+console.log(counter4.value);
 ```
 
----
+의 결과 값은?
 
-## 선택 매개 변수(optional parameter)
-
-함수의 파라미터 오른쪽에 **?** 를 사용하게 되면 optional이 된다.  
-undefined가능
-
-매개변수가 많은 경우 비 구조화 문법을 이용해서 이름이 있는 **named parameters**를 정의 하는게 좋다.
+> 0  
+> 5  
+> 5
 
 ```ts
-function getText(name: string, age: number = 15, language = 'korean'): string {
-  return '';
-}
+const counter5 = {
+  value: 0,
+  add: (amount) => {
+    this.value += amount;
+  },
+};
 
-console.log(getText('mike'));
-console.log(getText('mike', 23));
-console.log(getText('mike', 36, 'english'));
+console.log(counter5.value);
+counter5.add(5);
+console.log(counter5.value);
+const add4 = counter5.add;
+add4(5);
+console.log(counter5.value);
 ```
 
-language = 'korean'이라고 했을 때 자동으로 string으로 된다.  
-그리고 기본 값으로 처리되고 있어서 자동으로 number와 language는 optional 파라미터가 된다.
+> 0  
+> 0  
+> 0
 
----
-
-## Rest parameters
-
-```ts
-function getText(name: string, ...rest: number[]): string {
-  return '';
-}
-```
+감싸고 있는 일반 함수가 없기때문에 항상 global을 가지고 있게 된다.
+counter5의 밸류를 가리키는게 아니기에 항상 0이 된다.
