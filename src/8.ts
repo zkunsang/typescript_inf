@@ -1,16 +1,13 @@
-interface Object {
-    getShortKeys(this: object): string[];
+export { };
+
+interface GetText {
+    (name: string, age: number): string;
 }
 
-Object.prototype.getShortKeys = function () {
-    return Object.keys(this).filter(key => key.length <= 3);
+// type GetText = (name: string, age: number) => string
+
+const getText: GetText = function (name, age) {
+    const nameText = name.substr(0, 10);
+    const ageText = age >= 35 ? 'senior' : 'junior'
+    return `name: ${nameText}, age: ${ageText}`
 }
-
-const obj = {
-    a: 1,
-    bb: 2,
-    ccc: 3,
-    dddd: 4
-};
-
-console.log(obj.getShortKeys());

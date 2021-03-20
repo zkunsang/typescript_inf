@@ -1,14 +1,18 @@
 export { };
 
-interface Param {
+interface Person {
     name: string;
-    age?: number;
-    language?: string;
+    age: number;
 }
 
-function getText({ name, age = 15, language }: Param): string {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35 ? 'senior' : 'junior';
-    return `name: ${nameText}, age: ${ageText}, language: ${language}`;
+interface Product {
+    name: string;
+    price: number;
 }
 
+type PP = Person & Product;
+const pp: PP = {
+    name: 'a',
+    age: 23,
+    price: 1000
+}

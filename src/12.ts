@@ -1,18 +1,29 @@
-export { }
+export { };
 
-// named parameter
-function getText({
-    name,
-    age = 15,
-    language,
-}: {
+interface Person {
     name: string;
-    age?: number;
-    language?: string
-}): string {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35 ? 'senior' : 'junior';
-    return `name: ${nameText}, age: ${ageText}, language: ${language}`
+    age: number;
 }
 
-getText({ name: 'aaa', age: 11 });
+interface Programmer {
+    favoriteProgrammingLanguage: string;
+}
+
+interface Korean extends Person, Programmer {
+    isLiveInSeoul: boolean
+}
+
+class SomePeople implements Korean {
+    age: number;
+    name: string;
+    favoriteProgrammingLanguage: string
+    isLiveInSeoul: boolean
+
+    constructor(age: number, name: string) {
+        this.age = age;
+        this.name = name;
+        this.favoriteProgrammingLanguage = 'lang'
+        this.isLiveInSeoul = false
+    }
+
+}

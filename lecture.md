@@ -1,144 +1,214 @@
-## **this**란?
+```ts
+export {};
+
+
+interface Person {
+    name: string;
+
+    age?: number
+    // age: number | undefined;
+}
+
+const p1: Person = {name: 'mike'}
+```
+
+age?과  
+age: number | undefined와의 차이
+
+age? 는 생략할 수 잇지만
+age: number | undefined 는 age를 입력해 주어쟈 하고 undefined일 수 있다는 표시이다.
+
+---
+## 인덱스 타입
+```ts
+export {
+
+}
+
+// 인덱스 타입
+interface Person {
+    readonly name: string;
+    age: number;
+    [key: string]: string| number;
+    // 인덱스 타입 값의 타입만 정의
+    // 키값이 무자열인것의 value는 모두 string | number
+    //그래서 hello '123'이 가능
+}
+
+const p1: Person = {
+    name: 'mike',
+    birthday: '1997-01-01',
+    age: '25',
+    hello: '123'
+}
+
+```
+
+```ts
+export {}
+
+interface YearPriceMap {
+    [year: number]: number;
+    [year: string]: string | number;
+}
+
+// number는 string or number에 할당이 가능하기 때문에 타입 에러가 발생하지 않음
+interface YearPriceMap2 {
+    [year: number]: number;
+    [year: string]: string;
+}
+// number는 string에 할당 가능하지 않기 때문에 에러가 발생
+
+
+const yearMap: YearPriceMap = {}
+yearMap[1998] = 1000;
+yearMap[1998] = 'abc';
+
+yearMap['2000'] = 1234;
+yearMap['2000'] = 'million'
+
+```
+
+아래와 같이 type과 interface로 함수를 정의 할 수 있다.
+```ts
+interface GetText {
+    (name: string, age: number): string;
+}
+
+// type GetText = (name: string, age: number) => string
+
+const getText: GetText = function(name, age) {
+    const nameText = name.substr(0, 10);
+    const ageText = age >= 35 ? 'senior': 'junior'
+    return `name: ${nameText}, age: ${ageText}`
+}
+```
+## 함수의 속성값 지정
 ```ts
 export { };
 
-function getParam(this: string, index: number): string {
-    const params = this.split(',');
-
-    if (index < 0 || params.length <= index) {
-        return '';
-    }
-
-    return this.split(',')[index];
+interface GetText {
+    (name: string, age: number): string;
+    totalCall?: number
 }
-```
-파라미터 함수의 맨 앞에 this를 넣으면 this로 인식  
-매개변수는 this 이후에만 적용이 된다.
 
-```ts
-function getParam(this: string, index: number): string {
+const getText: GetText = function (name, age) {
+    if (getText.totalCall !== undefined) {
+        getText.totalCall += 1;
+
+        console.log(`totalCall: ${getText.totalCall}`);
+    }
     return '';
 }
 
-String.prototype.getParam = getParam;
+getText.totalCall = 0;
+getText('', 0);
+getText('', 0);
 ```
-위와 같이 String의 prototype에 새로운 함수를 넣어 줄려고 하는데 실패한다.
-이럴때는
+위와 같이 totalCall이라는 함수를 설정할 수 있다. 
 
-**interface**키워드를 사용한다.
-
-```ts
-function getParam(this: string, index: number): string {
-    return '';
-}
-
-String.prototype.getParam = getParam;
-
-interface String {
-    getParam(this: string, index: number): string;
-}
-```
-
-
+---
+## 클래스 implements
 ```ts
 export { };
 
-// add함수 작성하기
-// 두 매개 변수가 모두 문자열이면 문자열을 반환한다.
-// 두 매개 변수가 모두 숫자이면 숫자를 반환한다.
-// 두 매개변수를 서로 다른 타입으로 입력하면 안된다.
+interface Person {
+    name: string;
+    age: number;
+    isYoungerThan(age: number): boolean;
+}
 
-function add(x: number | string, y: number | string): number | string {
-    if (typeof x === 'number' && typeof y === 'number') {
-        return x + y;
-    } else {
-        const result = Number(x) + Number(y);
-        return result.toString();
+class SomePerson implements Person {
+    name: string;
+    age: number;
+
+    constructor(name: string, age: number) {
+        this.age = age;
+        this.name = name;
+    }
+
+    isYoungerThan(age: number) {
+        return this.age < age
     }
 }
 
-// 로직상으로는 정의가 되는데 타입으로는 처리가 안됨
-// 그리고 아래 1, + '2'역시 에러 표시가 안됨
-
-const v1: number = add(1, 2);
-console.log(add(1, '2'));
 ```
 
-
-```ts
-
-//함수 오버로딩을 사용한다.
-export { };
-
-function add(x: string, y: string): string;
-function add(x: number, y: number): number;
-function add(x: number | string, y: number | string): number | string {
-    if (typeof x === 'number' && typeof y === 'number') {
-        return x + y;
-    } else {
-        const result = Number(x) + Number(y);
-        return result.toString();
-    }
-}
-
-const v1: number = add(1, 2);
-const v2: string = add('1', '2');
-console.log(add(1, '2'));
-```
-
-
+---
+## 클래스 확장
 ```ts
 export { }
 
-// named parameter
-function getText({
-    name,
-    age = 15,
-    language,
-}: {
+interface Person {
     name: string;
-    age?: number;
-    language?: string
-}): string {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35 ? 'senior' : 'junior';
-    return `name: ${nameText}, age: ${ageText}, language: ${language}`
+    age: number;
 }
 
-getText({ name: 'aaa', age: 11 });
+interface Korean extends Person {
+    isLiveInSeoul: boolean
+}
+/*
+interface Korean {
+    name: string;
+    age: number;
+    isLiveInSeoul: boolean
+}
+*/
 ```
-아래와 같이 interface로 뺄 수 있따.
+
+---
+## 여러 인터페이스 확장
 ```ts
 export { };
 
-interface Param {
+interface Person {
     name: string;
-    age?: number;
-    language?: string;
+    age: number;
 }
 
-function getText({ name, age = 15, language }: Param): string {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35 ? 'senior' : 'junior';
-    return `name: ${nameText}, age: ${ageText}, language: ${language}`;
+interface Programmer {
+    favoriteProgrammingLanguage: string;
+}
+
+interface Korean extends Person, Programmer {
+    isLiveInSeoul: boolean
+}
+
+class SomePeople implements Korean {
+    age: number;
+    name: string;
+    favoriteProgrammingLanguage: string
+    isLiveInSeoul: boolean
+
+    constructor(age: number, name: string) {
+        this.age = age;
+        this.name = name;
+        this.favoriteProgrammingLanguage = 'lang'
+        this.isLiveInSeoul = false
+    }
+
 }
 ```
-
-## 네임드 코드 리팩토링하기
-해당 function의 앞에 클릭을 하면 💡표시를 누르면 메뉴가 나옴
+---
+## 교차 타입
 ```ts
-interface GetTextParam {
+export {};
+
+interface Person {
     name: string;
-    age?: number;
-    language?: string;
+    age: number;
 }
 
-function getText({ name, age = 15, language }: GetTextParam)
-    : string {
-    const nameText = name.substr(0, 10);
-    const ageText = age >= 35 ? 'senior' : 'junior';
-
-    return `name: ${nameText}, age: ${ageText}, language: ${language}`;
+interface Product {
+    name: string;
+    price: number;
 }
 
+type PP = Person & Product;
+const pp: PP = {
+    name: 'a',
+    age: 23,
+    price: 1000
+}
 ```
+&이 name만 교집합이 되어서 name만 되야 할 것 같지만 3개 name, age, price를 모두 포함해야 에러가 발생하지 않는다.
