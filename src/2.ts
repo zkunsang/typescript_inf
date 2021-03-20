@@ -1,12 +1,9 @@
 export {};
 
-let v1: undefined = undefined;
-let v2: null = null;
+enum Fruit {
+  Apple,
+  Banana = 5,
+  Orange,
+}
 
-v1 = 123;
-
-let v3: number | undefined = undefined;
-v3 = 123;
-
-console.log('typeof undefined =>', typeof undefined);
-console.log('typeof null =>', typeof null);
+console.log(Fruit.Apple, Fruit.Banana, Fruit.Orange);

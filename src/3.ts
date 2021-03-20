@@ -1,8 +1,11 @@
 export {};
 
-let v1: 10 | 20 | 30;
-v1 = 10;
-v1 = 15;
+enum Fruit {
+  Apple,
+  Banana = 5,
+  Orange,
+}
 
-let v2: '경찰관' | '소방관';
-v2 = '의사';
+console.log(Fruit.Banana);
+console.log(Fruit['Banana']);
+console.log(Fruit[5]);

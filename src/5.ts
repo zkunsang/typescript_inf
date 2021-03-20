@@ -1,15 +1,11 @@
 export {};
 
-function f1(): void {
-  console.log('hello');
+enum Language {
+  Korean = 'ko',
+  English = 'en',
+  Japanese = 'jp',
 }
 
-function f2(): never {
-  throw new Error('Some error');
-}
-
-function f3(): never {
-  while (true) {
-    //..
-  }
-}
+console.log(Language.Korean);
+console.log(Language['Korean']);
+console.log(Language['ko']);

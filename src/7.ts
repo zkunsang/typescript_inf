@@ -1,5 +1,7 @@
 export {};
 
-let v1: (1 | 3 | 5) & (3 | 5 | 7);
-v1 = 3;
-v1 = 5;
+function getIsValidEnumValue(enumObject: any, value: number | string) {
+  return Object.keys(enumObject)
+    .filter((key) => isNaN(Number(key)))
+    .some((key) => enumObject[key] == value);
+}

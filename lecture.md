@@ -1,74 +1,93 @@
-## 타입
+## enum키워드
 
-code runner 실행이 안되요  
-settings > executorMap > node_modules/.bin/ts-node
-
-종전 강의에서
-`npm install ts-node`를 설치 하지 않았다
-
-```zsh
-> npm install ts-node
-```
-
----
+enum에 어떠한 값도 입력하지 않으면 0번으로 자동 할당
 
 ```ts
-console.log('typeof undefined =>', typeof undefined);
-console.log('typeof null =>', typeof null);
+enum Fruit {
+  Apple,
+  Banana = 5,
+  Orange,
+}
+
+console.log(Fruit.Apple, Fruit.Banana, Fruit.Orange);
 ```
 
-위의 결과값은?
+위 값의 결과값은 `0, 5, 6`
 
-> typeof undefined => undefined  
-> typeof null => object
+```js
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+var Fruit;
+(function (Fruit) {
+  Fruit[(Fruit['Apple'] = 0)] = 'Apple';
+  Fruit[(Fruit['Banana'] = 5)] = 'Banana';
+  Fruit[(Fruit['Orange'] = 6)] = 'Orange';
+})(Fruit || (Fruit = {}));
+console.log(Fruit.Apple, Fruit.Banana, Fruit.Orange);
+```
 
-javascript에서 undefined라는 타입이 있지만  
-null은 **object**이다
+위의 코드를 컴파일 한 결과이다.  
+해당 내용들은 양방향 맵핑을 하게 된다  
+**양방향 맵핑**이란?
 
----
+```ts
+console.log(Fruit.Banana);
+console.log(Fruit['Banana']);
+console.log(Fruit[5]);
+```
 
-typescript에서는 문자열과 숫자 릴터럴 형식 역시 타입으로 정의 할 수 있다.
+라고 했을때 결과값이
 
----
+> 5  
+> 5  
+> Banana
 
-## any타입(any)
+로 나오게 된다.
 
-any라는 타입은 기존 javascript라고 생각해도 괜찮다.  
-any 타입 남발은 X
-
----
-
-## 함수의 반환형(void, never)
-
-void: 아무것도 반환하지 않음  
-never: 무한 루프를 돌거나 익셉션을 처리 해야 할때  
-never는 거의 사용 X
-
----
-
-## 객체 정보(object)
+### 문자열로 하게 되는경우
 
 ```typescript
-let v: object;
-v = { name: 'abc' };
-// console.log(v.prop1);
-// console.log(v.name);
+'use strict';
+Object.defineProperty(exports, '__esModule', { value: true });
+var Language;
+(function (Language) {
+  Language['Korean'] = 'ko';
+  Language['English'] = 'en';
+  Language['Japanese'] = 'jp';
+})(Language || (Language = {}));
 ```
 
-을 했을때 prop1에 대한 정보 name에 대한 정보 역시 없어서 에러 표시가 나게 된다.  
-인터페이스를 사용
+Fruit과 달리 단방향으로 맵핑되게 된다.
+
+```ts
+console.log(Language.Korean);
+console.log(Language['Korean']);
+console.log(Language['ko']);
+```
+
+# 위와 같은 경우에 Language['ko']는 에러를 발생하게 된다.
+
+아래와 같은 함수를 정의 할 수 있다  
+enum의 **값**인지 아닌지를 판별하는 함수
+
+```ts
+function getIsValidEnumValue(enumObject: any, value: number | string) {
+  return Object.keys(enumObject)
+    .filter((key) => isNaN(Number(key)))
+    .some((key) => enumObject[key] == value);
+}
+```
+
+filter를 하는 이유는 양방향인경우를 막기 위해서 처리한다.  
+console.log(Fruit['Banana']);
+이런식을
 
 ---
 
-## 유니온 타입과 인터섹션(union, intersection)
+## const enum
 
-```ts
-let v1: (1 | 3 | 5) & (3 | 5 | 7);
-```
+enum같은 경우 일반적으로 object로 남게 되는데 이렇게 되면 불필요하게 커지는 경우가 발생하게 된다.  
+const enum을 사용할 경우 오브젝트로 남지 않게 된다.  
+번들 파일의 크기를 줄일 수 있다.
 
-## 타입 키보드를 이용해서 타입에 별칭을 줄 수 있음(type)
-
-```ts
-type Width = number | string;
-let width: Width;
-```
+위에서 만든 getIsValidEnumValue에 const enum이기에 사용 할 수 없다는 에러가 표시된다.
