@@ -1,9 +1,7 @@
 export {};
 
-enum Fruit {
-  Apple,
-  Banana = 5,
-  Orange,
-}
+const getText: (name: string, age: number) => string = function (name, age) {
+  return 'hello';
+};
 
-console.log(Fruit.Apple, Fruit.Banana, Fruit.Orange);
+const temp: string = getText('123', 4);

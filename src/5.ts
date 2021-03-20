@@ -1,11 +1,7 @@
 export {};
 
-enum Language {
-  Korean = 'ko',
-  English = 'en',
-  Japanese = 'jp',
+function getText(name: string, ...rest: number[]): string {
+  return '';
 }
 
-console.log(Language.Korean);
-console.log(Language['Korean']);
-console.log(Language['ko']);
+console.log(getText('mike', 1, 2, 3));
