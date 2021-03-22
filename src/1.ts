@@ -1,15 +1,11 @@
 export { };
 
-class Person {
-    name: string;
-    age: number = 0;
+function func1(a: number, b: number | string) {
+    const v1: number | string = a;
+    const v2: number = b;
+}
 
-    constructor(name: string, age: number) {
-        this.name = name;
-        this.age = age;
-    }
-
-    sayHello() {
-        console.log('안녕하세요');
-    }
+function func2(a: 1 | 2) {
+    const v1: 1 | 3 = a;
+    const v2: 1 | 2 | 3 = a;
 }

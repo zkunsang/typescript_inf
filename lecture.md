@@ -1,51 +1,44 @@
-## class constructor에 protected가 붙으면
-protected가 붙게 되면 직접 생성자를 호출 할 수 없고 상속 받은 다른 클래스에서 사용할 수 있다.
+## 타입 호환성
+타입 스크립트는 값 자체의 타입 보다는 값이 가진 내부 구조에 기반하여 호환성을 체크한다.  
+이를 structural typing이라고 부름
 
----
-
-## Read only keyword
-read only키워드가 붙게 되면 생성자에서만 적용시킬 수 있다.
-
----
-## person
 ```ts
 export { };
 
-class Person {
-
-    constructor(public name: string, public age: number) {
-
-    }
+interface Person {
+    name: string;
+    age: number;
 }
 
-const person = new Person('홍길동', 23);
-console.log(person.name, person.age);
+interface Product {
+    name: string;
+    age: number;
+}
+
+const person: Person = { name: 'mike', age: 23 };
+const product: Product = person;
 ```
-constructor에 public을 붙이게 되면 자동으로 멤버 변수를 생성하게 된다.
+타입 이름이 다르나 내부 구조가 같아 할당이 가능함
+다른 정적 언어는 안되지만 structural typing이여서 가능
 
 ---
-## getter setter
+## 
 ```ts
-export { };
+export {};
 
-class Person {
-    private _name: string = '';
-
-    get name(): string {
-        console.log('getter called');
-        return this._name;
-    }
-
-    set name(newName: string) {
-        if (newName.length > 10) {
-            throw new Error('최대 길이를 넘었습니다');
-        }
-        this._name = newName;
-    }
+interface Person {
+    name: string;
 }
 
-let person = new Person();
-person.name = '홍기롱';
-console.log(person.name);
-person.name = 'asdklfjlasdjfalksdjflkasdfj'
+interface Product {
+    name: string;
+    age: number;
+}
+
+const obj = { name: 'mike', age: '23', city: 'abc' }
+
+let person: Person = obj;
+let product: Product = obj;
+
+// 속성이 많아질수록 더 많은 제약이 생기는것( Person 보다는 Product가 제약이 더 많음)
 ```
