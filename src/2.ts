@@ -1,10 +1,17 @@
 export { };
 
-interface Person {
-    name: string;
-
-    age?: number
-    // age: number | undefined;
+class Person {
+    sayHello() {
+        console.log('안녕하세요');
+    }
 }
 
-const p1: Person = { name: 'mike' }
+class Programmer extends Person {
+    fixBut() {
+        console.log('버그 수정 완료')
+    }
+}
+
+const programmer = new Programmer();
+programmer.fixBut();
+programmer.sayHello();

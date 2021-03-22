@@ -1,9 +1,15 @@
 export { };
 
-interface Person {
-    name: string,
-    age: number
-}
+class Person {
+    name: string;
+    age: number = 0;
 
-const p1: Person = { name: 'mike', age: 23 };
-const p2: Person = { name: 'mike', age: 'ten' }
+    constructor(name: string, age: number) {
+        this.name = name;
+        this.age = age;
+    }
+
+    sayHello() {
+        console.log('안녕하세요');
+    }
+}
