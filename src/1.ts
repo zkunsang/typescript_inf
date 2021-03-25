@@ -1,11 +1,23 @@
 export { };
 
-function func1(a: number, b: number | string) {
-    const v1: number | string = a;
-    const v2: number = b;
+function makeNumberArray(defaultValue: number, size: number): number[] {
+    const arr: number[] = [];
+
+    for (let i = 0; i < size; i++) {
+        arr.push(defaultValue);
+    }
+
+    return arr;
+}
+function makeStringArray(defaultValue: string, size: number): string[] {
+    const arr: string[] = [];
+
+    for (let i = 0; i < size; i++) {
+        arr.push(defaultValue);
+    }
+
+    return arr;
 }
 
-function func2(a: 1 | 2) {
-    const v1: 1 | 3 = a;
-    const v2: 1 | 2 | 3 = a;
-}
+const arr1 = makeNumberArray(1, 10);
+const arr2 = makeStringArray('empty', 10);
