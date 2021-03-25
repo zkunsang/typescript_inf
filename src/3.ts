@@ -1,15 +1,13 @@
 export { };
 
-function makeArray<T>(defaultValue: T, size: number): T[] {
-    const arr: T[] = [];
-
-    for (let i = 0; i < size; i++) {
-        arr.push(defaultValue);
-    }
-
-    return arr;
+interface Person {
+    name: string;
+    age: number;
 }
 
-const arr1 = makeArray<number>(1, 10);
-const arr2 = makeArray<string>('empty', 10);
-const arr3 = makeArray(1, 123);
+type MakeBoolean<T> = { [P in keyof T]?: boolean };
+const pMap: MakeBoolean<Person> = {}
+pMap.name = true;
+pMap.age = false;
+pMap.age = undefined;
+pMap.age = 1;

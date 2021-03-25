@@ -1,9 +1,13 @@
 export { };
 
-function identity<T extends number | string>(p1: T): T {
-    return p1;
+type Pick<T, K extends keyof T> = { [p in K]: T[p] };
+
+interface Person {
+    name: string;
+    age: number;
+    language: string;
 }
 
-identity(1);
-identity('a');
-identity([]);
+type T1 = Pick<Person, 'name' | 'language'>;
+
+const temp: T1 = { name: '123', language: 'kr' }

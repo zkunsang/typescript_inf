@@ -1,26 +1,14 @@
 export { };
 
-class Stack<D> {
-    private items: D[] = [];
-
-    push(item: D) {
-        this.items.push(item);
-    }
-
-    pop() {
-        return this.items.pop();
-    }
+interface Person {
+    name: string;
+    age: number;
 }
 
-const numberStack = new Stack<number>();
-numberStack.push(10);
-const v1 = numberStack.pop();
+type T1 = Person['name'];
 
-const stringStack = new Stack<string>();
-stringStack.push('a');
+type ReadOnly<T> = { readonly [p in keyof T]: T[p] };
+type Partial<T> = { [p in keyof T]?: T[p] };
 
-const v2 = stringStack.pop();
-
-let myStack: Stack<number>;
-myStack = numberStack;
-myStack = stringStack;
+type T2 = Partial<Person>;
+type T3 = Readonly<Person>;
