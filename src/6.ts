@@ -1,15 +1,19 @@
 export { };
 
+
+type StringPropertyNames<T> = {
+    [K in keyof T]: T[K] extends string ? K : never;
+}[keyof T]
+
 interface Person {
     name: string;
     age: number;
-    language: string;
+    nation: string;
 }
 
-type Record<K extends string, T> = { [P in K]: T };
-type T1 = Record<'p1' | 'p2', Person>;
 
-T1 {
-    p1: Person,
-        p2: Person
-}
+
+type T1 = StringPropertyNames<Person>;
+
+type StringProperties<T> = Pick<T, StringPropertyNames<T>>;
+type T2 = StringProperties<Person>

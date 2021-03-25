@@ -4,118 +4,68 @@ mapped 타입이란 특정 inteface를 다른 함수에 잇는 녀석들을 **op
 ```ts
 export {};
 
-interface Person {
-    name: string;
-    age: number;
-}
+type IsStringType<T> = T extends string ? 'yes': 'no';
 
-interface PersonOptional {
-    name?: string;
-    age?: number;
-}
-
-interface PersonReadOnly {
-    readonly name: string;
-    readonly age: number;
-}
-
-
+type T1 = IsStringType<string>;
+type T2 = IsStringType<number>;
 ```
 
-## maaped type 
-```ts
-export { };
+삼항연산자의 'yes' 'no'가 값이 아니라 타입이다.  
+`const test: T1 = 'yes'`  
+이런식으로 값을 넣어야 한다
 
-interface Person {
-    name: string;
-    age: number;
+
+## 조건부 타입
+```ts
+type IsStringType<T> = T extends string ? 'yes' : 'no';
+type T1 = IsStringType<string | number>;
+type T2 = IsStringType<string> | IsStringType<number>;
+
+// T1의 타입은 yes | no
+// 조건부 타입을 사용하게 되면 
+// type T1이
+// type T2처럼 인식된다.
+
+type Array2<T> = Array<T>;
+type T3 = Array2<string | number>;
+
+const t3: T3 = [1, 'a'];
+const t2: T2 = 'yes';
+const t2_: T2 = 'no';
+```
+
+##
+```ts
+// 만약 [keyof T]가 없다고 가정하면
+type StringPropertyNames<T> = {
+    [K in keyof T]: T[K] extends string ? K : never;
 }
-
-type MakeBoolean<T> = { [P in keyof T]?: boolean };
-const pMap: MakeBoolean<Person> = {}
-pMap.name = true;
-pMap.age = false;
-pMap.age = undefined;
-pMap.age = 1;
-```
-위와 같이 undefined | boolean형태로도 가능하다
-
-## type
-
-```ts
-
-interface Person {
-    name: string;
-    age: number;
-}
-
-type T1 = Person['name'];
-```
-
-T1 은 string형식
-
-```ts
-type ReadOnly<T> = { readonly [p in keyof T]: T[p] };
-type Partial<T> = { [p in keyof T]?: T[p] };
-```
-type name = Person[name];  
-type age = Person[age];  
-
-name과 age의 타입은 그대로이고 readonly만 붙이게 된다  
-name과 age의 타입은 그대로이고 optional만 붙이게 된다.
-
-Readonly와 Partial은 타입스크립트 내장 타입
-
-
-## Pick
-```ts
-export { };
-
-type Pick<T, K extends keyof T> = { [p in K]: T[p] };
 
 interface Person {
     name: string;
     age: number;
-    language: string;
+    nation: string;
 }
+type T1 = StringPropertyNames<Person>
 
-type T1 = Pick<Person, 'name' | 'language'>;
-
-const temp: T1 = { name: '123', language: 'kr' }
 ```
+`위와 같은 형태이면  T1은 {name: 'name', age: never, nation: 'nation'}이 된다.`
 
-T1은 **Pick**한 Person의 'name', 'language'를 가지는 type을 만든다.
-
-## Record
 ```ts
-type Record<K extends string, T> = { [P in K]: T };
-type T1 = Record<'p1' | 'p2', Person>;
-
+type StringPropertyNames<T> = {
+    [K in keyof T]: T[K] extends string ? K : never;
+} [key of T];
 ```
-
-T1의 타입은   
-T1 {
-    p1: Person,
-    p2: Person
-}
-
-## 맵드 타입의 효용성
-이넘타입의 활용도를 높일 수 있다.
+를 하게 되면 값의 타입을 뽑아낸다
 ```ts
-enum Fruit {
-    Apple,
-    Banana,
-    Orange,
-}
+type T3 = Person2['name' | 'nation' | never];
 
-const FRUIT_PRICE2: { [key in Fruit]: number } = {
-    [Fruit.Apple]: 1,
-    [Fruit.Banana]: 2,
-    [Fruit.Orange]: 3,
-}
-
-// Orange2가 추가가 되면 Fruit클래스와 FRUIT_PRICE둘다 처리해 줘야한다.
-// 이런걸 깜빡할 수 가 있음
 ```
+위에 내용을 풀어서 쓰면  
+따라서 T3 name | nation이 됨
 
-맵드 타입으로 지정하면 enum에 추가가 되게 되면 FRUIT_PRICE가 에러가 발생하게 됨
+```ts
+type StringProperties<T> = Pick<T, StringPropertyNames<T>>;
+type T2 = StringProperties<Person>
+```
+T2는 {name: string, nation: string}
